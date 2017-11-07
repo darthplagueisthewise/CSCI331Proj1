@@ -1,9 +1,9 @@
 #include "RSVector.h"
 using namespace std;
 
-RSVector::RSVector()
+RSVector::RSVector(int container_size) // Constructor with container size passed in from command line
 {
-	Container = new Vector(8);
+	Container = new Vector(container_size);
 	Active = Container.begin();
 	Passive = Container.end()-1;
 	Wall = Container.end()-1;
@@ -12,10 +12,23 @@ RSVector::RSVector()
 }
 
 template <class T>
-void RSVector::current_heap_push(const T& item)
+void RSVector::current_heap_push(const T& item) throw (exception)
 {
-	Container.insert(Curr_Insert_Ptr, item);
+	/* only add to current heap if heap location is empty */
+	if (Curr_Insert_Ptr == nullptr)
+	{
+		Container.insert(Curr_Insert_Ptr, item);
 	
+		// If Insert Ptr is less than wall we increment
+		if (Curr_Insert_Ptr < Wall)
+		{
+			++Curr_Insert_Ptr;
+		}
+	}
+	else
+	{
+		throw exception("Error pushing current heap!"); 
+	}
 }
 
 void RSVector::current_heap_pop()

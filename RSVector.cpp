@@ -1,48 +1,79 @@
 #include "RSVector.h"
+#include <iostream>
+#include <algorithm>
 using namespace std;
 
-RSVector::RSVector(int container_size) // Constructor with container size passed in from command line
+template <class T>
+RSVector<T>::RSVector(int container_size) // Constructor with container size passed in from command line
 {
-	Container = new Vector(container_size);
+	Container = vector<T>(container_size);
 	Active = Container.begin();
-	Passive = Container.end()-1;
+	Pending = Container.end()-1;
 	Wall = Container.end()-1;
 	Curr_Insert_Ptr = Container.begin();
-	Pass_Insert_Ptr = Container.end()-1;
+	Pend_Insert_Ptr = Container.end()-1;
 }
 
 template <class T>
-void RSVector::current_heap_push(const T& item) throw (exception)
+void RSVector<T>::current_heap_push(const T& item)
 {
-	/* only add to current heap if heap location is empty */
-	if (Curr_Insert_Ptr == nullptr)
-	{
-		Container.insert(Curr_Insert_Ptr, item);
+	*Curr_Insert_Ptr = item;
 	
-		// If Insert Ptr is less than wall we increment
-		if (Curr_Insert_Ptr < Wall)
-		{
-			++Curr_Insert_Ptr;
-		}
-	}
-	else
+	Heapify();
+	
+	// If Insert Ptr is not at wall we increment
+	if (Curr_Insert_Ptr != Wall)
 	{
-		throw exception("Error pushing current heap!"); 
+		Curr_Insert_Ptr++;
 	}
 }
 
-void RSVector::current_heap_pop()
+template <class T>
+void RSVector<T>::current_heap_pop()
 {
 
 }
 
 template <class T>
-void RSVector::passive_heap_push(T item)
+void RSVector<T>::pending_heap_push(const T& item)
 {
-	Container.insert(Pass_Insert_Ptr, item);
+	*Pend_Insert_Ptr = item;
+
+	/* 	Needs to be more code added here 
+		Moving wall over?
+		Worry about this later
+	*/
 }
 
-void RSVector::Toggle()
+template <class T>
+void RSVector<T>::Toggle()
 {
-	
+	auto temp = Active;
+	Active = Pending;
+	Pending = temp;
 }
+
+template <class T>
+void RSVector<T>::PrintVector()
+{
+	for (T item : Container)
+	{
+		cout << item << " ";
+	}
+	
+	cout << endl;
+}
+
+template <class T>
+void RSVector<T>::Heapify()
+{
+	if (*Curr_Insert_Ptr < *Active)
+	{
+		swap(*Curr_Insert_Ptr, *Active);
+	}
+}
+
+
+
+
+

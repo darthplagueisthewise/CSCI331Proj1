@@ -1,7 +1,14 @@
 #include "RSVector.h"
 #include <iostream>
 #include <algorithm>
+
 using namespace std;
+
+struct greater1{
+  bool operator()(const long& a,const long& b) const{
+    return a>b;
+  }
+};
 
 template <class T>
 RSVector<T>::RSVector(int container_size) // Constructor with container size passed in from command line
@@ -19,7 +26,7 @@ void RSVector<T>::current_heap_push(const T& item)
 {
 	*Curr_Insert_Ptr = item;
 	
-	Heapify();
+	// Heapify();
 	
 	// If Insert Ptr is not at wall we increment
 	if (Curr_Insert_Ptr != Wall)
@@ -31,7 +38,7 @@ void RSVector<T>::current_heap_push(const T& item)
 template <class T>
 void RSVector<T>::current_heap_pop()
 {
-
+	pop_heap(Container.begin(),Container.end(), greater1());
 }
 
 template <class T>
@@ -60,6 +67,7 @@ void RSVector<T>::PrintVector()
 	{
 		cout << item << " ";
 	}
+
 	
 	cout << endl;
 }
@@ -67,13 +75,13 @@ void RSVector<T>::PrintVector()
 template <class T>
 void RSVector<T>::Heapify()
 {
-	if (*Curr_Insert_Ptr < *Active)
-	{
-		swap(*Curr_Insert_Ptr, *Active);
-	}
+	make_heap(Container.begin(), Container.end(), greater1());
+	
+	/*while (Container.size()) {
+		pop_heap(Container.begin(),Container.end(), greater1());
+		long min = Container.back();
+		Container.pop_back();  
+		cout << min << std::endl;
+  	}*/
+
 }
-
-
-
-
-
